@@ -1,0 +1,161 @@
+:root {
+  --primary-navy: #0a192f;
+  --primary-blue: #1e40af;
+  --primary-accent: #2563eb;
+  --sky-blue: #38bdf8;
+  --slate-dark: #0f172a;
+  --slate-medium: #475569;
+  --slate-light: #f8fafc;
+  --slate-border: #e2e8f0;
+  
+  --success-green: #10b981;
+  --warning-amber: #f59e0b;
+  --danger-red: #ef4444;
+  
+  --card-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.05), 0 8px 10px -6px rgba(15, 23, 42, 0.03);
+  --card-shadow-hover: 0 20px 30px -10px rgba(37, 99, 235, 0.12), 0 10px 15px -5px rgba(15, 23, 42, 0.05);
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  background-color: #f8fafc;
+  color: #1e293b;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Custom Utilities & Components */
+.bg-navy {
+  background-color: var(--primary-navy) !important;
+}
+
+.text-navy {
+  color: var(--primary-navy) !important;
+}
+
+.bg-gradient-hero {
+  background: linear-gradient(135deg, #0a192f 0%, #1e3a8a 50%, #0f172a 100%);
+}
+
+.bg-gradient-subtle {
+  background: linear-gradient(180deg, #f1f5f9 0%, #f8fafc 100%);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--slate-border);
+  border-radius: 1rem;
+  box-shadow: var(--card-shadow);
+  transition: all 0.25s ease-in-out;
+}
+
+.glass-card:hover {
+  box-shadow: var(--card-shadow-hover);
+}
+
+.btn-primary-custom {
+  background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%);
+  color: #ffffff !important;
+  border: none;
+  font-weight: 600;
+  border-radius: 0.6rem;
+  padding: 0.65rem 1.4rem;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+  transition: all 0.2s ease;
+}
+
+.btn-primary-custom:hover {
+  background: linear-gradient(135deg, #1d4ed8 0%, #1d4ed8 100%);
+  color: #ffffff !important;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
+}
+
+.btn-outline-custom {
+  border: 1.5px solid #cbd5e1;
+  color: #334155;
+  font-weight: 600;
+  border-radius: 0.6rem;
+  padding: 0.65rem 1.4rem;
+  background: #ffffff;
+  transition: all 0.2s ease;
+}
+
+.btn-outline-custom:hover {
+  border-color: #2563eb;
+  color: #2563eb;
+  background: #f0f9ff;
+}
+
+.badge-genuine {
+  background-color: #ecfdf5 !important;
+  color: #047857 !important;
+  border: 1px solid #a7f3d0 !important;
+}
+
+.badge-review {
+  background-color: #fffbeb !important;
+  color: #b45309 !important;
+  border: 1px solid #fde68a !important;
+}
+
+.badge-forged {
+  background-color: #fef2f2 !important;
+  color: #b91c1c !important;
+  border: 1px solid #fca5a5 !important;
+}
+
+/* Chatbot Floating Widget */
+.chatbot-panel {
+  width: 380px;
+  max-width: calc(100vw - 32px);
+  height: 520px;
+  max-height: calc(100vh - 120px);
+  position: fixed;
+  bottom: 90px;
+  right: 20px;
+  z-index: 1050;
+  box-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.25);
+  border-radius: 1.25rem;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.chatbot-btn {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 1050;
+  border-radius: 9999px;
+  padding: 0.75rem 1.4rem;
+  font-weight: 700;
+  box-shadow: 0 10px 25px rgba(37, 99, 235, 0.4);
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}

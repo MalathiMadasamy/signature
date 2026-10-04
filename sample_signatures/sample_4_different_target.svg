@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 200" width="500" height="200">
+  <rect width="100%" height="100%" fill="#ffffff"/>
+  <g stroke="#0f172a" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <!-- Big R -->
+    <path d="M 80 160 L 80 60 C 120 50, 160 70, 140 110 C 120 130, 80 110, 80 110 L 160 160" />
+    <!-- cursive smith -->
+    <path d="M 180 130 C 200 110, 220 140, 240 120 C 260 100, 270 150, 290 120 C 310 100, 330 140, 350 120 L 350 70" />
+    <path d="M 330 90 L 370 90" />
+    <!-- Underline -->
+    <path d="M 70 175 Q 250 185, 400 170" />
+  </g>
+</svg>

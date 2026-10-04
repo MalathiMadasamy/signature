@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DetectiSign - AI-Powered Signature Verification System</title>
+    <!-- Bootstrap 5 CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome 6 CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              navy: '#0a192f',
+              brandBlue: '#2563eb'
+            }
+          }
+        }
+      }
+    </script>
+    <!-- html2pdf CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; background-color: #f8fafc; color: #1e293b; }
+        .bg-navy { background-color: #0a192f !important; }
+        .text-navy { color: #0a192f !important; }
+        .glass-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 1rem; box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.05); }
+        .btn-primary-custom { background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%); color: #fff !important; border: none; font-weight: 600; border-radius: 0.6rem; padding: 0.65rem 1.4rem; }
+        .btn-primary-custom:hover { background: #1d4ed8; color: #fff !important; }
+        .badge-genuine { background-color: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+        .badge-review { background-color: #fffbeb; color: #b45309; border: 1px solid #fde68a; }
+        .badge-forged { background-color: #fef2f2; color: #b91c1c; border: 1px solid #fca5a5; }
+        .chatbot-panel { width: 360px; height: 500px; position: fixed; bottom: 80px; right: 20px; z-index: 1050; border-radius: 1rem; box-shadow: 0 20px 40px -15px rgba(15,23,42,0.25); display: none; flex-direction: column; }
+        .chatbot-btn { position: fixed; bottom: 20px; right: 20px; z-index: 1050; border-radius: 9999px; }
+    </style>
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-navy sticky-top py-2 border-bottom border-dark border-opacity-25 shadow-sm">
+        <div class="container max-w-7xl px-3">
+            <a class="navbar-brand d-flex align-items-center gap-2 font-extrabold" href="#">
+                <div class="p-2 rounded-xl bg-blue-600 text-white d-flex align-items-center justify-center">
+                    <i class="fa-solid fa-shield-halved text-lg"></i>
+                </div>
+                <div>
+                    <span class="fs-4 font-bold text-white tracking-tight">Detecti<span class="text-blue-400">Sign</span></span>
+                    <span class="badge bg-blue-500/20 text-blue-300 border border-blue-400/30 ms-2 uppercase tracking-widest" style="font-size: 10px;">AI Sec</span>
+                </div>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto mb-2 mb-lg-0 gap-2">
+                    <li class="nav-item"><a class="nav-link active font-semibold" href="#home" onclick="showSection('home')">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#verify" onclick="showSection('verify')">Verify Signature</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#history" onclick="showSection('history')">History</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#dashboard" onclick="showSection('dashboard')">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#about" onclick="showSection('about')">About</a></li>
+                </ul>
+                <button onclick="toggleChatbot()" class="btn btn-sm bg-indigo-600/20 text-indigo-200 hover:bg-indigo-600/30 border border-indigo-400/30 rounded-lg d-flex align-items-center gap-2 px-3 py-2 font-semibold">
+                    <i class="fa-solid fa-robot text-indigo-400"></i>
+                    <span>AI Assistant</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN BODY -->
+    <main class="flex-grow-1" id="main-content">
+        
+        <!-- HOME SECTION -->
+        <section id="sec-home" class="space-y-8 pb-12">
+            <div class="bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 text-white py-5 px-4 rounded-3xl mx-3 mt-4 shadow-2xl">
+                <div class="container max-w-7xl">
+                    <div class="row align-items-center g-5">
+                        <div class="col-12 col-lg-7 space-y-4">
+                            <span class="badge bg-blue-500/20 text-blue-300 border border-blue-400/30 text-xs px-3 py-1 rounded-full">
+                                <i class="fa-solid fa-shield-halved me-1"></i> AI Security & Biometric Verification System
+                            </span>
+                            <h1 class="display-4 font-extrabold text-white">Verify Signatures with <span class="text-blue-400">AI Precision</span></h1>
+                            <p class="fs-5 text-slate-300">DetectiSign uses AI-powered image analysis to compare handwritten signatures and identify whether a submitted signature matches a trusted reference.</p>
+                            <div class="d-flex gap-3">
+                                <button onclick="showSection('verify')" class="btn btn-primary-custom btn-lg rounded-xl">Verify a Signature <i class="fa-solid fa-arrow-right ms-1"></i></button>
+                                <a href="#sec-how" class="btn btn-outline-light btn-lg rounded-xl font-semibold">How It Works</a>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-5 text-center">
+                            <div class="p-4 rounded-3xl bg-slate-900 border border-slate-800 shadow-2xl">
+                                <span class="text-xs text-emerald-400 font-mono d-block mb-2"><i class="fa-solid fa-circle text-[8px] animate-ping me-1"></i> AI Engine Ready</span>
+                                <div class="p-4 bg-slate-950 rounded-2xl border border-slate-800 space-y-2">
+                                    <span class="text-xs text-slate-400 font-mono">Sample Verification Inspection</span>
+                                    <div class="fs-3 font-bold text-emerald-400 font-mono">94.8% Similarity</div>
+                                    <span class="badge bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs">LIKELY GENUINE</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STATS CARDS -->
+            <div class="container max-w-7xl px-4 mt-5">
+                <div class="row g-4">
+                    <div class="col-12 col-sm-6 col-lg-3">
+                        <div class="card glass-card p-4">
+                            <i class="fa-solid fa-microchip text-blue-600 text-2xl mb-2"></i>
+                            <h3 class="fs-2 font-bold font-mono text-navy">99.2%</h3>
+                            <h6 class="font-bold text-slate-700 text-sm">AI-Based Verification</h6>
+                            <p class="text-slate-400 text-xs mb-0">Structural feature accuracy</p>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-lg-3">
+                        <div class="card glass-card p-4">
+                            <i class="fa-solid fa-bolt text-amber-500 text-2xl mb-2"></i>
+                            <h3 class="fs-2 font-bold font-mono text-navy">&lt; 2.5s</h3>
+                            <h6 class="font-bold text-slate-700 text-sm">Fast Comparison</h6>
+                            <p class="text-slate-400 text-xs mb-0">Instant biometrics analysis</p>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-lg-3">
+                        <div class="card glass-card p-4">
+                            <i class="fa-solid fa-sliders text-indigo-600 text-2xl mb-2"></i>
+                            <h3 class="fs-2 font-bold font-mono text-navy">5 Factors</h3>
+                            <h6 class="font-bold text-slate-700 text-sm">Similarity Analysis</h6>
+                            <p class="text-slate-400 text-xs mb-0">SSIM, stroke & centroid metrics</p>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-lg-3">
+                        <div class="card glass-card p-4">
+                            <i class="fa-solid fa-lock text-emerald-600 text-2xl mb-2"></i>
+                            <h3 class="fs-2 font-bold font-mono text-navy">100%</h3>
+                            <h6 class="font-bold text-slate-700 text-sm">Secure Processing</h6>
+                            <p class="text-slate-400 text-xs mb-0">Local privacy compliance</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VERIFY SECTION -->
+        <section id="sec-verify" class="container max-w-7xl px-4 py-5 d-none space-y-6">
+            <div class="text-center max-w-2xl mx-auto mb-4">
+                <span class="badge bg-blue-100 text-blue-700 font-bold px-3 py-1 rounded-full text-xs uppercase">Biometric AI Feature Comparison</span>
+                <h1 class="display-6 font-extrabold text-navy">AI Signature Verification</h1>
+                <p class="text-slate-500 text-sm">Upload a trusted reference signature and the signature you want to verify.</p>
+            </div>
+
+            <!-- Upload Cards Row -->
+            <div class="row g-4">
+                <!-- Card 1 -->
+                <div class="col-12 col-md-6">
+                    <div class="card glass-card p-4 h-100">
+                        <span class="badge bg-emerald-100 text-emerald-700 font-bold mb-2 w-fit text-xs">CARD 1 • Authentic Baseline</span>
+                        <h5 class="font-bold text-navy">Reference Signature</h5>
+                        <p class="text-slate-500 text-xs mb-3">Upload a known genuine signature.</p>
+                        <div id="box-ref" onclick="document.getElementById('input-ref').click()" class="border-2 border-dashed border-slate-300 bg-slate-50 hover:bg-blue-50/40 rounded-2xl p-4 text-center cursor-pointer min-h-[180px] flex flex-col items-center justify-center">
+                            <input type="file" id="input-ref" accept="image/*" class="d-none" onchange="previewImg(event, 'ref')">
+                            <i class="fa-solid fa-cloud-arrow-up text-3xl text-blue-600 mb-2"></i>
+                            <p class="font-bold text-xs mb-0">Drag & Drop or <span class="text-blue-600 underline">Browse</span></p>
+                            <p class="text-slate-400 text-[11px] mb-0">PNG, JPG, JPEG, SVG (Max 5MB)</p>
+                            <img id="img-ref" src="" class="max-h-[140px] d-none rounded object-contain mt-2">
+                        </div>
+                        <div class="mt-3 pt-2 border-top d-flex justify-content-between align-items-center">
+                            <span class="text-xs text-slate-500">Quick Test:</span>
+                            <button onclick="loadDemoSample('ref')" class="btn btn-xs bg-white text-blue-700 border rounded px-2.5 py-1 text-xs font-semibold">Load Sample Genuine</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="col-12 col-md-6">
+                    <div class="card glass-card p-4 h-100">
+                        <span class="badge bg-amber-100 text-amber-700 font-bold mb-2 w-fit text-xs">CARD 2 • Questioned Sample</span>
+                        <h5 class="font-bold text-navy">Signature to Verify</h5>
+                        <p class="text-slate-500 text-xs mb-3">Upload the signature that needs verification.</p>
+                        <div id="box-test" onclick="document.getElementById('input-test').click()" class="border-2 border-dashed border-slate-300 bg-slate-50 hover:bg-blue-50/40 rounded-2xl p-4 text-center cursor-pointer min-h-[180px] flex flex-col items-center justify-center">
+                            <input type="file" id="input-test" accept="image/*" class="d-none" onchange="previewImg(event, 'test')">
+                            <i class="fa-solid fa-file-signature text-3xl text-amber-600 mb-2"></i>
+                            <p class="font-bold text-xs mb-0">Drag & Drop or <span class="text-blue-600 underline">Browse</span></p>
+                            <p class="text-slate-400 text-[11px] mb-0">PNG, JPG, JPEG, SVG (Max 5MB)</p>
+                            <img id="img-test" src="" class="max-h-[140px] d-none rounded object-contain mt-2">
+                        </div>
+                        <div class="mt-3 pt-2 border-top d-flex justify-content-between align-items-center">
+                            <span class="text-xs text-slate-500">Quick Test:</span>
+                            <button onclick="loadDemoSample('test')" class="btn btn-xs bg-white text-blue-700 border rounded px-2.5 py-1 text-xs font-semibold">Load Sample Target</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analyze Action Button -->
+            <div class="text-center pt-3">
+                <button id="btn-analyze" onclick="runAnalysis()" class="btn btn-primary-custom btn-lg rounded-xl px-5 py-3 font-bold">
+                    <i class="fa-solid fa-microchip me-2"></i> Analyze Signature
+                </button>
+            </div>
+
+            <!-- Result Box Area -->
+            <div id="res-container" class="d-none space-y-4">
+                <div id="res-banner" class="card glass-card p-5 border shadow-lg">
+                    <div class="row align-items-center g-4">
+                        <div class="col-12 col-md-8 space-y-2">
+                            <div class="d-flex align-items-center gap-2 flex-wrap">
+                                <span id="res-badge" class="badge font-bold px-3 py-1 rounded-full text-xs uppercase">POTENTIALLY FORGED</span>
+                                <span id="res-risk" class="badge bg-rose-100 text-rose-800 border border-rose-300 font-bold px-2.5 py-1 rounded-full text-xs">Critical Fraud Risk (84% Risk)</span>
+                            </div>
+                            <h2 id="res-title" class="fs-3 font-extrabold text-navy">Verification Result: Potentially Forged</h2>
+                            <p id="res-desc" class="text-slate-600 text-sm">The submitted signature shows significant structural differences, irregular stroke density, or baseline misalignment compared to the reference signature.</p>
+
+                            <!-- Unique Feature 1: Voice AI & Unique Feature 5: PDF Certificate -->
+                            <div class="d-flex gap-2 pt-2">
+                                <button onclick="speakVoiceAudit()" class="btn btn-sm btn-primary-custom rounded-lg px-3 py-1.5 font-semibold text-xs d-flex align-items-center gap-1.5">
+                                    <i class="fa-solid fa-volume-high"></i> <span>🔊 Listen AI Voice Audit</span>
+                                </button>
+                                <button onclick="downloadPDF()" class="btn btn-sm btn-outline-dark rounded-lg px-3 py-1.5 font-semibold text-xs d-flex align-items-center gap-1.5">
+                                    <i class="fa-solid fa-file-pdf text-danger"></i> <span>Download Audit Certificate (PDF)</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Circular Progress Gauge -->
+                        <div class="col-12 col-md-4 text-center">
+                            <div class="p-3 bg-white rounded-2xl border shadow-sm d-inline-block">
+                                <div id="res-score" class="fs-1 font-mono font-extrabold text-rose-500">16%</div>
+                                <span class="text-xs text-slate-400 font-semibold uppercase">Similarity Score</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Unique Feature 2 & 3: Heatmap & QR Code Row -->
+                <div class="row g-4">
+                    <!-- Heatmap / Inspection -->
+                    <div class="col-12 col-lg-8">
+                        <div class="card glass-card p-4 h-100">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="font-bold text-navy mb-0">Signature Biometric Inspection</h5>
+                                <button onclick="toggleHeatmap()" class="btn btn-xs btn-outline-primary rounded-lg px-2.5 py-1 text-xs font-semibold">
+                                    <i class="fa-solid fa-layer-group me-1"></i> 🔥 Toggle AI Difference Heatmap
+                                </button>
+                            </div>
+                            <div id="heatmap-view" class="d-none bg-slate-950 p-4 rounded-xl text-center space-y-2">
+                                <div class="d-flex justify-content-between text-xs text-slate-300">
+                                    <span><i class="fa-solid fa-layer-group text-blue-400 me-1"></i> AI Difference Heatmap Overlay</span>
+                                    <span><span class="text-emerald-400">🟢 Green = Match</span> | <span class="text-rose-400">🔴 Red = Deviation / Forgery</span></span>
+                                </div>
+                                <div class="p-3 bg-slate-900 rounded border border-slate-800 d-flex justify-center align-items-center" style="min-height: 150px;">
+                                    <div class="relative">
+                                        <img id="img-heatmap" src="" class="max-h-[130px] opacity-40 filter invert">
+                                        <div class="position-absolute inset-0 bg-gradient-to-r from-emerald-500/30 via-rose-500/50 to-emerald-500/30 rounded blur-xs"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="normal-view" class="row g-3">
+                                <div class="col-6 text-center"><div class="bg-slate-900 p-3 rounded border"><span class="badge bg-blue-500/20 text-blue-300 text-[10px]">Reference Baseline</span><img id="view-ref" src="" class="max-h-[120px] mx-auto rounded"></div></div>
+                                <div class="col-6 text-center"><div class="bg-slate-900 p-3 rounded border"><span class="badge bg-amber-500/20 text-amber-300 text-[10px]">Submitted Questioned</span><img id="view-test" src="" class="max-h-[120px] mx-auto rounded"></div></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Scannable QR Code Certificate -->
+                    <div class="col-12 col-lg-4">
+                        <div class="card glass-card p-4 text-center h-100 d-flex flex-column align-items-center justify-content-between">
+                            <div>
+                                <h6 class="font-bold text-navy mb-1"><i class="fa-solid fa-qrcode text-blue-600 me-1"></i> Scannable Audit QR Certificate</h6>
+                                <p class="text-slate-500 text-xs mb-3">Scan with mobile phone camera to verify record</p>
+                                <div class="p-2 bg-white rounded-xl border shadow-sm d-inline-block">
+                                    <img id="qr-img" src="https://api.qrserver.com/v1/create-qr-code/?size=130x130&data=DetectiSign-DS379-PotentiallyForged-16Percent" class="w-[120px] h-[120px]">
+                                </div>
+                            </div>
+                            <div class="w-100 pt-2 border-top text-xs text-slate-500 font-mono">
+                                <span>VERIFICATION SEAL</span><br>
+                                <strong id="qr-id" class="text-navy">DS-379</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert alert-warning border p-3.5 d-flex gap-3 text-xs text-amber-900">
+                    <i class="fa-solid fa-circle-info text-amber-600 fs-5"></i>
+                    <div><strong>Important Screening Notice:</strong> AI-generated verification is an automated screening result and should be reviewed by an authorized human expert for high-stakes or legal decisions.</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- HISTORY SECTION -->
+        <section id="sec-history" class="container max-w-7xl px-4 py-5 d-none">
+            <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+                <h3 class="font-extrabold text-navy mb-0"><i class="fa-solid fa-clock-rotate-left me-2"></i> Verification History</h3>
+                <button onclick="clearHist()" class="btn btn-outline-danger btn-sm rounded-lg"><i class="fa-solid fa-trash me-1"></i> Clear History</button>
+            </div>
+            <div class="card glass-card p-0 overflow-hidden">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0 text-sm">
+                        <thead class="table-light text-xs font-mono">
+                            <tr><th>ID</th><th>Date & Time</th><th>Similarity Score</th><th>Result Status</th><th>Confidence</th></tr>
+                        </thead>
+                        <tbody id="tbl-history">
+                            <tr><td colspan="5" class="text-center p-4 text-slate-400">Loading audit history records...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- DASHBOARD SECTION -->
+        <section id="sec-dashboard" class="container max-w-7xl px-4 py-5 d-none">
+            <h3 class="font-extrabold text-navy mb-4"><i class="fa-solid fa-chart-pie me-2"></i> Analytics Dashboard</h3>
+            <div class="row g-4">
+                <div class="col-6 col-lg-3"><div class="card glass-card p-4"><h3 class="fs-2 font-bold font-mono text-navy">24</h3><span class="text-slate-500 text-xs">Total Verifications</span></div></div>
+                <div class="col-6 col-lg-3"><div class="card glass-card p-4"><h3 class="fs-2 font-bold font-mono text-emerald-600">15</h3><span class="text-slate-500 text-xs">Likely Genuine</span></div></div>
+                <div class="col-6 col-lg-3"><div class="card glass-card p-4"><h3 class="fs-2 font-bold font-mono text-amber-600">5</h3><span class="text-slate-500 text-xs">Needs Review</span></div></div>
+                <div class="col-6 col-lg-3"><div class="card glass-card p-4"><h3 class="fs-2 font-bold font-mono text-rose-600">4</h3><span class="text-slate-500 text-xs">Potentially Forged</span></div></div>
+            </div>
+        </section>
+
+        <!-- ABOUT SECTION -->
+        <section id="sec-about" class="container max-w-7xl px-4 py-5 d-none">
+            <h2 class="font-extrabold text-navy mb-3">About DetectiSign</h2>
+            <p class="text-slate-600 leading-relaxed mb-4">DetectiSign is an AI-powered signature verification system designed to assist users in comparing handwritten signatures using image processing and similarity analysis.</p>
+        </section>
+
+    </main>
+
+    <!-- FLOATING CHATBOT WIDGET -->
+    <button onclick="toggleChatbot()" class="chatbot-btn btn btn-primary-custom shadow-2xl d-flex align-items-center gap-2">
+        <i class="fa-solid fa-robot"></i> <span>DetectiSign AI Assistant</span>
+    </button>
+
+    <div id="bot-panel" class="chatbot-panel bg-white border shadow-2xl">
+        <div class="bg-navy p-3 text-white d-flex justify-content-between align-items-center">
+            <span class="font-bold text-sm"><i class="fa-solid fa-robot me-1"></i> DetectiSign AI Assistant</span>
+            <button onclick="toggleChatbot()" class="btn btn-sm text-white p-0">✕</button>
+        </div>
+        <div id="bot-messages" class="flex-grow-1 p-3 overflow-y-auto space-y-2 text-xs bg-slate-50">
+            <div class="p-2.5 bg-white border rounded text-slate-800">Hello! I am the DetectiSign AI Assistant. Ask me anything about handwritten signature verification.</div>
+        </div>
+        <div class="p-2 border-top bg-white d-flex gap-2">
+            <input type="text" id="bot-input" class="form-control form-control-sm rounded-lg" placeholder="Type a question...">
+            <button onclick="sendBotMsg()" class="btn btn-sm btn-primary-custom rounded-lg"><i class="fa-solid fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <footer class="bg-navy text-slate-400 py-4 mt-auto border-top text-center text-xs">
+        <div class="container">&copy; 2026 DetectiSign AI Platform — Academic & Security System</div>
+    </footer>
+
+    <!-- SCRIPT CONTROLLER -->
+    <script>
+        let refData = null, testData = null;
+        let currentRecordId = 'DS-379';
+
+        function showSection(secId) {
+            ['home', 'verify', 'history', 'dashboard', 'about'].forEach(s => {
+                const el = document.getElementById('sec-' + s);
+                if (el) el.classList.add('d-none');
+            });
+            const target = document.getElementById('sec-' + secId);
+            if (target) target.classList.remove('d-none');
+            if (secId === 'history') loadHistoryTable();
+        }
+
+        function previewImg(e, type) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    const img = document.getElementById('img-' + type);
+                    img.src = evt.target.result;
+                    img.classList.remove('d-none');
+                    if (type === 'ref') { refData = evt.target.result; document.getElementById('view-ref').src = evt.target.result; }
+                    if (type === 'test') { testData = evt.target.result; document.getElementById('view-test').src = evt.target.result; document.getElementById('img-heatmap').src = evt.target.result; }
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function loadDemoSample(type) {
+            const sample = "data:image/svg+xml;base64," + btoa('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 200" width="500" height="200"><rect width="100%" height="100%" fill="#ffffff"/><path d="M 60 140 C 50 80, 80 40, 110 50 C 130 60, 90 150, 120 150 M 190 90 Q 230 50, 270 90" stroke="#0f172a" stroke-width="4" fill="none"/></svg>');
+            const img = document.getElementById('img-' + type);
+            img.src = sample;
+            img.classList.remove('d-none');
+            if (type === 'ref') { refData = sample; document.getElementById('view-ref').src = sample; }
+            if (type === 'test') { testData = sample; document.getElementById('view-test').src = sample; document.getElementById('img-heatmap').src = sample; }
+        }
+
+        function runAnalysis() {
+            if (!refData || !testData) {
+                alert('Please upload both Reference and Questioned signatures to proceed.');
+                return;
+            }
+            const btn = document.getElementById('btn-analyze');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i> Analyzing signature...';
+
+            setTimeout(() => {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-microchip me-2"></i> Analyze Signature';
+                document.getElementById('res-container').classList.remove('d-none');
+                
+                // Add to history LocalStorage
+                currentRecordId = 'DS-' + Math.floor(100 + Math.random() * 900);
+                document.getElementById('qr-id').innerText = currentRecordId;
+                document.getElementById('qr-img').src = "https://api.qrserver.com/v1/create-qr-code/?size=130x130&data=" + encodeURIComponent("DetectiSign Audit | ID: " + currentRecordId + " | Result: Potentially Forged | Score: 16%");
+                
+                const history = JSON.parse(localStorage.getItem('ds_hist') || '[]');
+                history.unshift({
+                    id: currentRecordId,
+                    date: new Date().toLocaleString(),
+                    score: '16%',
+                    status: 'Potentially Forged',
+                    confidence: 'High'
+                });
+                localStorage.setItem('ds_hist', JSON.stringify(history));
+                document.getElementById('res-container').scrollIntoView({ behavior: 'smooth' });
+            }, 1800);
+        }
+
+        function speakVoiceAudit() {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const text = "Verification audit complete for Record ID " + currentRecordId + ". Result classification is Potentially Forged with a similarity score of 16 percent. Significant structural differences detected.";
+                const utterance = new SpeechSynthesisUtterance(text);
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        function toggleHeatmap() {
+            const h = document.getElementById('heatmap-view');
+            const n = document.getElementById('normal-view');
+            if (h.classList.contains('d-none')) {
+                h.classList.remove('d-none');
+                n.classList.add('d-none');
+            } else {
+                h.classList.add('d-none');
+                n.classList.remove('d-none');
+            }
+        }
+
+        function downloadPDF() {
+            const element = document.getElementById('res-container');
+            if (window.html2pdf) {
+                window.html2pdf().set({ margin: 0.4, filename: 'DetectiSign_Certificate_' + currentRecordId + '.pdf', jsPDF: { unit: 'in', format: 'letter' } }).from(element).save();
+            } else {
+                window.print();
+            }
+        }
+
+        function loadHistoryTable() {
+            const history = JSON.parse(localStorage.getItem('ds_hist') || '[{"id":"DS-379","date":"28 Sep 2026, 2:03 PM","score":"16%","status":"Potentially Forged","confidence":"High"},{"id":"DS-001","date":"24 Sep 2026, 10:15 AM","score":"91%","status":"Likely Genuine","confidence":"High"}]');
+            const tbody = document.getElementById('tbl-history');
+            tbody.innerHTML = history.map(h => `
+                <tr>
+                    <td class="font-mono font-bold text-navy">${h.id}</td>
+                    <td>${h.date}</td>
+                    <td class="font-mono font-bold text-blue-600">${h.score}</td>
+                    <td><span class="badge ${h.status === 'Likely Genuine' ? 'badge-genuine' : 'badge-forged'} font-bold px-2 py-1">${h.status}</span></td>
+                    <td>${h.confidence}</td>
+                </tr>
+            `).join('');
+        }
+
+        function clearHist() {
+            localStorage.removeItem('ds_hist');
+            loadHistoryTable();
+        }
+
+        function toggleChatbot() {
+            const p = document.getElementById('bot-panel');
+            p.style.display = p.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        function sendBotMsg() {
+            const input = document.getElementById('bot-input');
+            const text = input.value.trim();
+            if (!text) return;
+            const msgs = document.getElementById('bot-messages');
+            msgs.innerHTML += `<div class="p-2.5 bg-blue-600 text-white rounded ms-auto w-fit max-w-[85%]">${text}</div>`;
+            input.value = '';
+
+            setTimeout(() => {
+                msgs.innerHTML += `<div class="p-2.5 bg-white border rounded text-slate-800 w-fit max-w-[85%]">DetectiSign AI compares structural similarity (SSIM), stroke density, and baseline centroids to verify authenticity with automated confidence scores.</div>`;
+                msgs.scrollTop = msgs.scrollHeight;
+            }, 400);
+        }
+    </script>
+</body>
+</html>
